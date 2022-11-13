@@ -11,4 +11,13 @@ export class ShopService {
       { name: 'Lody waniliowe', description: 'Całkowicie wegańskie', price: 7 },
     ];
   }
+
+  hasProduct(name: string): boolean {
+    return this.getListOfProducts().some((product) => product.name === name);
+  }
+
+  getPriceOfProduct(name: string): number {
+    return this.getListOfProducts().find((product) => product.name === name)
+      .price;
+  }
 }
