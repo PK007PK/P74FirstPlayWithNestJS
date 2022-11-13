@@ -8,8 +8,8 @@ export class ShopController {
     @Inject(ShopService) private shopService: ShopService, // <--- Dependency injection
   ) {}
 
-  @Get('/')
+  @Get('/') // <--- This is a route
   getListOfProducts(): GetListOfProductsResponse {
-    return this.shopService.getListOfProducts();
+    return this.shopService.getListOfProducts(); // <--- Calling a service
   }
 }

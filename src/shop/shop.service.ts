@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
 
-@Injectable()
+@Injectable() // <--- This decorator is required for dependency injection
 export class ShopService {
+  // <--- This class is a services
   getListOfProducts(): GetListOfProductsResponse {
     return [
       { name: 'Ogórki kiszone', description: 'Bardzo dobre ogórki', price: 10 },
