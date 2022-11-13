@@ -1,12 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { BasketService } from 'src/basket/basket.service';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
 
-@Injectable() // <--- This decorator is required for dependency injection
+@Injectable()
 export class ShopService {
-  // <--- This class is a services
+  constructor(
+    @Inject(forwardRef(() => BasketService))
+    private readonly basketService: BasketService,
+  ) {}
+
   getListOfProducts(): GetListOfProductsResponse {
     return [
-      { name: 'Ogórki kiszone', description: 'Bardzo dobre ogórki', price: 10 },
+      {
+        name: 'Ogórki kiszone',
+        description: 'Bardzo dobre ogórki',
+        price: 10 - this.basketService.countPromo(),
+      },
       { name: 'Seler naciowy', description: 'Smaczny i zdrowy', price: 3 },
       { name: 'Lody waniliowe', description: 'Całkowicie wegańskie', price: 7 },
     ];

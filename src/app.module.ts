@@ -5,9 +5,10 @@ import { BasketModule } from './basket/basket.module';
 import { FoxController } from './fox/fox.controller';
 import { FoxService } from './fox/fox.service';
 import { ShopModule } from './shop/shop.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ShopModule, BasketModule],
+  imports: [ShopModule, BasketModule, UsersModule],
   controllers: [AppController, FoxController],
   providers: [AppService, FoxService],
 })
