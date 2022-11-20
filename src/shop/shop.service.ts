@@ -1,4 +1,11 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Get,
+  Inject,
+  Injectable,
+  Param,
+  Redirect,
+} from '@nestjs/common';
 import { BasketService } from 'src/basket/basket.service';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
 
@@ -28,5 +35,12 @@ export class ShopService {
   getPriceOfProduct(name: string): number {
     return this.getListOfProducts().find((product) => product.name === name)
       .price;
+  }
+
+  @Get('/test')
+  @Redirect()
+  testRedirect(@Param('age') age: string) {
+    const url = Number(age) > 18 ? '/test2' : '/test3';
+    return { url, statusCode: 301 };
   }
 }
