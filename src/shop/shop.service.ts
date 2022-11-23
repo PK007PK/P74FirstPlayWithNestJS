@@ -6,35 +6,61 @@ import {
   Param,
   Redirect,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { BasketService } from 'src/basket/basket.service';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
+import { Repository } from 'typeorm';
+import { ShopItem } from './shop-item.entity';
 
 @Injectable()
 export class ShopService {
   constructor(
     @Inject(forwardRef(() => BasketService))
     private readonly basketService: BasketService,
+    @InjectRepository(ShopItem)
+    private readonly shopItemRepository: Repository<ShopItem>,
   ) {}
 
-  getListOfProducts(): GetListOfProductsResponse {
-    return [
-      {
-        name: 'Ogórki kiszone',
-        description: 'Bardzo dobre ogórki',
-        price: 10 - this.basketService.countPromo(),
-      },
-      { name: 'Seler naciowy', description: 'Smaczny i zdrowy', price: 3 },
-      { name: 'Lody waniliowe', description: 'Całkowicie wegańskie', price: 7 },
-    ];
+  async getListOfProducts(): Promise<GetListOfProductsResponse> {
+    return await this.shopItemRepository.find();
   }
 
-  hasProduct(name: string): boolean {
-    return this.getListOfProducts().some((product) => product.name === name);
+  async hasProduct(name: string): Promise<boolean> {
+    return (await this.getListOfProducts()).some(
+      (product) => product.name === name,
+    );
   }
 
-  getPriceOfProduct(name: string): number {
-    return this.getListOfProducts().find((product) => product.name === name)
-      .price;
+  async getPriceOfProduct(name: string): Promise<number> {
+    return (await this.getListOfProducts()).find(
+      (product) => product.name === name,
+    ).price;
+  }
+  async getOneProduct(id: string): Promise<ShopItem> {
+    return await this.shopItemRepository.findOneBy({ id });
+  }
+
+  async removeProduct(id: string): Promise<void> {
+    await this.shopItemRepository.delete(id);
+  }
+
+  async createDummyProduct(): Promise<ShopItem> {
+    const newItem = new ShopItem();
+    newItem.name = 'test';
+    newItem.price = 100;
+    newItem.description = 'test';
+    await this.shopItemRepository.save(newItem);
+    return newItem;
+  }
+
+  async addBoughtCount(id: string): Promise<void> {
+    this.shopItemRepository.update(id, { boughtCount: 1 });
+    const item = await this.shopItemRepository.findOneBy({ id });
+    if (!item) {
+      return;
+    }
+    item.boughtCount++;
+    await this.shopItemRepository.save(item);
   }
 
   @Get('/test')
