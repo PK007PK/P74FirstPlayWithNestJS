@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BasketService } from 'src/basket/basket.service';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
 import { Repository } from 'typeorm';
+import { ShopItemDetails } from './shop-item.details.entity';
 import { ShopItem } from './shop-item.entity';
 
 @Injectable()
@@ -49,7 +50,19 @@ export class ShopService {
     newItem.name = 'test';
     newItem.price = 100;
     newItem.description = 'test';
+
     await this.shopItemRepository.save(newItem);
+
+    const details = new ShopItemDetails();
+    details.width = 100;
+    details.color = 'red';
+
+    await details.save();
+
+    newItem.details = details;
+
+    await newItem.save();
+
     return newItem;
   }
 
