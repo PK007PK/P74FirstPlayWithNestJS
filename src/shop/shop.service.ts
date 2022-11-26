@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasketService } from 'src/basket/basket.service';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
-import { Repository } from 'typeorm';
+import { DataSource, getConnection, Repository } from 'typeorm';
 import { ShopItemDetails } from './shop-item.details.entity';
 import { ShopItem } from './shop-item.entity';
 
@@ -20,6 +20,7 @@ export class ShopService {
     private readonly basketService: BasketService,
     @InjectRepository(ShopItem)
     private readonly shopItemRepository: Repository<ShopItem>,
+    @Inject(DataSource) private dataSource: DataSource,
   ) {}
 
   async getListOfProducts(): Promise<GetListOfProductsResponse> {
@@ -74,6 +75,17 @@ export class ShopService {
     }
     item.boughtCount++;
     await this.shopItemRepository.save(item);
+  }
+
+  async findProducts(searchTerm: string): Promise<GetListOfProductsResponse> {
+    return await this.dataSource
+      .createQueryBuilder()
+      .select('shopItem')
+      .from(ShopItem, 'shopItem')
+      .where('shopItem.description LIKE :searchTerm', {
+        searchTerm: `%${searchTerm}%`,
+      })
+      .getMany();
   }
 
   @Get('/test')
