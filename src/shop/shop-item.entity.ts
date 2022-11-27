@@ -1,3 +1,4 @@
+import { ShopItemInterface } from 'src/interfaces/interfaces';
 import {
   Entity,
   Column,
@@ -14,18 +15,17 @@ import { ShopItemDetails } from './shop-item.details.entity';
 import { ShopSet } from './shop-set.entity';
 
 @Entity()
-export class ShopItem extends BaseEntity implements ShopItem {
+export class ShopItem extends BaseEntity implements ShopItemInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 100 }) //nazwa max 100 znaków
+  @Column({ length: 100 })
   name: string;
 
-  @Column({ length: 10000, default: '', nullable: true }) //opis max 1000 znaków
+  @Column({ length: 10000, default: '', nullable: true })
   description: string | null;
-  //   @Column({ type: 'decimal', precision: 10, scale: 2 }) //cena max 10 znaków, 2 po przecinku
 
-  @Column({ type: 'float', precision: 6, scale: 2 }) //cena max 10 znaków, 2 po przecinku
+  @Column({ type: 'float', precision: 7, scale: 2 })
   price: number;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
@@ -52,4 +52,7 @@ export class ShopItem extends BaseEntity implements ShopItem {
   @ManyToMany((type) => ShopSet, (entity) => entity.items)
   @JoinTable() //dodaję tabelę pośredniczącą
   sets: ShopSet[];
+
+  @OneToOne((type) => ShopItem, (entity) => entity.mainShopItem)
+  itemInBasket: ShopItem;
 }

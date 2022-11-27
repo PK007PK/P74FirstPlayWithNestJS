@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasketService } from 'src/basket/basket.service';
 import { GetListOfProductsResponse } from 'src/interfaces/interfaces';
-import { DataSource, getConnection, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ShopItemDetails } from './shop-item.details.entity';
 import { ShopItem } from './shop-item.entity';
 
@@ -23,8 +23,8 @@ export class ShopService {
     @Inject(DataSource) private dataSource: DataSource,
   ) {}
 
-  async getListOfProducts(): Promise<GetListOfProductsResponse> {
-    return await this.shopItemRepository.find();
+  async getListOfProducts(): Promise<ShopItem[]> {
+    return ShopItem.find();
   }
 
   async hasProduct(name: string): Promise<boolean> {

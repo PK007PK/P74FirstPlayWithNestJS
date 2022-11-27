@@ -15,6 +15,7 @@ import {
 } from 'src/interfaces/basket';
 import { BasketService } from './basket.service';
 import { addProductDto } from './dto/add-product.dto';
+import { ItemInBasket } from './item-in-basket.entity';
 
 @Controller('basket')
 export class BasketController {
@@ -23,22 +24,22 @@ export class BasketController {
   ) {}
 
   @Get('/')
-  checkBasket(): ListProductInBasketResponse {
+  checkBasket(): Promise<ItemInBasket[]> {
     return this.basketService.checkBasket();
   }
 
   @Post('/')
-  addProductToBasket(@Body() item: addProductDto): AddProductToBasketResponse {
+  addProductToBasket(
+    @Body() item: addProductDto,
+  ): Promise<AddProductToBasketResponse> {
     return this.basketService.addProduct(item);
   }
 
-  @Delete('/:index')
+  @Delete('/:id')
   removeProductFromBasket(
-    @Param('index') index: string,
-  ): RemoveProductFromBasketResponse {
-    console.log(index);
-
-    return this.basketService.removeProduct(Number(index));
+    @Param('id') id: string,
+  ): Promise<RemoveProductFromBasketResponse> {
+    return this.basketService.removeProduct(id);
   }
 
   @Get('total-price')
