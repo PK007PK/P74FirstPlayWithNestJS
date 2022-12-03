@@ -16,8 +16,9 @@ import { ShopSet } from './shop-set.entity';
 
 @Entity()
 export class ShopItem extends BaseEntity implements ShopItemInterface {
-  @PrimaryGeneratedColumn('uuid')
   id: string;
+  @PrimaryGeneratedColumn('uuid')
+  productId: string;
 
   @Column({ length: 100 })
   name: string;
@@ -53,6 +54,6 @@ export class ShopItem extends BaseEntity implements ShopItemInterface {
   @JoinTable() //dodaję tabelę pośredniczącą
   sets: ShopSet[];
 
-  @OneToOne((type) => ShopItem, (entity) => entity.mainShopItem)
+  @OneToMany((type) => ShopItem, (entity) => entity.mainShopItem)
   itemInBasket: ShopItem;
 }

@@ -7,6 +7,7 @@ import { FoxController } from './fox/fox.controller';
 import { FoxService } from './fox/fox.service';
 import { ShopModule } from './shop/shop.module';
 import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -25,8 +26,10 @@ import { UsersModule } from './users/users.module';
     ShopModule,
     BasketModule,
     UsersModule,
+    UserModule,
   ],
   controllers: [AppController, FoxController],
   providers: [AppService, FoxService],
 })
 export class AppModule {}
+``;

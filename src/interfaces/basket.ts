@@ -12,4 +12,14 @@ export type ListProductInBasketResponse = addProductDto[] | null;
 
 export type GetTotalPriceResponse =
   | number
-  | { isSuccess: false; alternativeBasket: addProductDto[] };
+  | { isSuccess: false; alternativeBasket: OneItemInBasket[] };
+
+export interface OneItemInBasket {
+  id: string;
+  count: number;
+}
+
+export interface GetBasketStatsResponse {
+  itemInBasketAvgPrice: number;
+  basketAvgTotalPrice: number;
+}

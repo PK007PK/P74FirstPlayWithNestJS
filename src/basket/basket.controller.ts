@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import {
   AddProductToBasketResponse,
+  GetBasketStatsResponse,
   GetTotalPriceResponse,
-  ListProductInBasketResponse,
   RemoveProductFromBasketResponse,
 } from 'src/interfaces/basket';
 import { BasketService } from './basket.service';
@@ -23,9 +23,14 @@ export class BasketController {
     @Inject(BasketService) private readonly basketService: BasketService,
   ) {}
 
-  @Get('/')
-  checkBasket(): Promise<ItemInBasket[]> {
-    return this.basketService.checkBasket();
+  @Get('/:userId')
+  checkBasket(@Body() userId: string): Promise<ItemInBasket[]> {
+    return this.basketService.getAllForUser(userId);
+  }
+
+  @Get('/admin')
+  checkBasketForAdmin(): Promise<ItemInBasket[]> {
+    return this.basketService.getAllForAdmin();
   }
 
   @Post('/')
@@ -35,15 +40,28 @@ export class BasketController {
     return this.basketService.addProduct(item);
   }
 
-  @Delete('/:id')
+  @Delete('/:id/:userId')
   removeProductFromBasket(
-    @Param('id') id: string,
+    @Param('itemInBasketId') itemInBasketId: string,
+    @Param('userId') userId: string,
   ): Promise<RemoveProductFromBasketResponse> {
-    return this.basketService.removeProduct(id);
+    return this.basketService.remove(itemInBasketId, userId);
   }
 
-  @Get('total-price')
-  getTotalPrice(): Promise<GetTotalPriceResponse> {
-    return this.basketService.getTotalPrice();
+  @Delete('/all/:userId')
+  clearBasket(
+    @Param('userId') userId: string,
+  ): Promise<RemoveProductFromBasketResponse> {
+    return this.basketService.clearBasket(userId);
+  }
+
+  @Get('/total-price/:userId')
+  getTotalPrice(@Body() userId: string): Promise<GetTotalPriceResponse> {
+    return this.basketService.getTotalPrice(userId);
+  }
+
+  @Get('/stats')
+  getStats(): Promise<GetBasketStatsResponse> {
+    return this.basketService.getStats();
   }
 }
